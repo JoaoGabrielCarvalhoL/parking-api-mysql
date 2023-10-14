@@ -1,6 +1,8 @@
 package br.com.carv.parking.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -11,6 +13,8 @@ public class UserInfoSystem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "char(36)")
+    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @Column(nullable = false)

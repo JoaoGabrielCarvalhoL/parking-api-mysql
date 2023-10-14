@@ -1,5 +1,6 @@
 package br.com.carv.parking.controller;
 
+import br.com.carv.parking.exception.response.ResponseException;
 import br.com.carv.parking.payload.request.PasswordResetPostRequest;
 import br.com.carv.parking.payload.request.UserPostRequest;
 import br.com.carv.parking.payload.request.UserPutRequest;
@@ -30,10 +31,17 @@ public interface UserSystemController {
     @Operation(summary = "Create User.", description = "Request to create a new user.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Created.", content =
             { @Content(schema = @Schema(implementation = UserResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "Bad Request."),
-            @ApiResponse(responseCode = "401", description = "Unauthorized."),
-            @ApiResponse(responseCode = "403", description = "Forbidden."),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error.")})
+            @ApiResponse(responseCode = "400", description = "Bad Request.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseException.class))),
+
+            @ApiResponse(responseCode = "401", description = "Unauthorized.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseException.class))),
+
+            @ApiResponse(responseCode = "403", description = "Forbidden.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseException.class))),
+
+            @ApiResponse(responseCode = "500", description = "Internal Server Error.",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ResponseException.class)))})
     @PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseStatus(HttpStatus.CREATED)

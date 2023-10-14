@@ -2,6 +2,8 @@ package br.com.carv.parking.entity;
 
 import br.com.carv.parking.enumerations.Role;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -16,6 +18,8 @@ public class UserSystem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "char(36)")
+    @JdbcTypeCode(SqlTypes.CHAR)
     private UUID id;
 
     @Column(nullable = false, length = 200)
@@ -30,15 +34,14 @@ public class UserSystem implements Serializable {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(nullable = false)
+    private String passwordHash;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime updatedAt;
-
-    @Column(nullable = false)
-    private String passwordHash;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserInfoSystem userInfoSystem;
