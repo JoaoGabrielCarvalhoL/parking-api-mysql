@@ -136,6 +136,6 @@ public class UserSystemServiceImpl implements UserSystemService {
             return new UserInfoSystem(httpServletRequest.getHeader("User-Agent"),
                     httpServletRequest.getRemoteAddr(), httpServletRequest.getLocale().toString());
         }
-        return new UserInfoSystem();
+        return new UserInfoSystem("", "", "");
     }
 }
