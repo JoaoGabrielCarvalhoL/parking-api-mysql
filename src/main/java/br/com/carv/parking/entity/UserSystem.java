@@ -4,6 +4,11 @@ import br.com.carv.parking.enumerations.Role;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -14,6 +19,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tb_users")
+@EntityListeners(AuditingEntityListener.class)
 public class UserSystem implements Serializable {
 
     @Id
@@ -38,9 +44,11 @@ public class UserSystem implements Serializable {
     private String passwordHash;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -55,8 +63,10 @@ public class UserSystem implements Serializable {
 
     private Boolean isVerified;
 
+    @CreatedBy
     private String createdBy;
 
+    @LastModifiedBy
     private String updatedBy;
 
     public UserSystem() {}
@@ -114,16 +124,8 @@ public class UserSystem implements Serializable {
         return createdAt;
     }
 
-    private void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    private void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getPasswordHash() {
@@ -178,17 +180,10 @@ public class UserSystem implements Serializable {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
     public String getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -203,13 +198,4 @@ public class UserSystem implements Serializable {
         return Objects.hash(id);
     }
 
-    @PrePersist
-    private void setupCreatedAt() {
-        setCreatedAt(LocalDateTime.now());
-    }
-
-    @PreUpdate
-    private void setupUpdatedAt() {
-        setUpdatedAt(LocalDateTime.now());
-    }
 }
