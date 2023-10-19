@@ -1,10 +1,13 @@
 package br.com.carv.parking.jwt;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
+import br.com.carv.parking.exception.ParkingJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import jakarta.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +27,7 @@ public class JWTProvider {
     private Long expiration;
 
     private SecretKey generateKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
+        return Keys.hmacShaKeyFor(DatatypeConverter.parseBase64Binary(key));
     }
 
     public String generateToken(Authentication authentication) {
@@ -37,7 +40,7 @@ public class JWTProvider {
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(expiredAt)
-                .signWith(generateKey())
+                .signWith(generateKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -52,6 +55,12 @@ public class JWTProvider {
             return true;
         } catch (MalformedJwtException ex) {
             throw new MalformedJwtException("Invalid JWT Token");
+        } catch (ExpiredJwtException ex) {
+            throw new ParkingJwtException("Expired JWT Token");
+        } catch (UnsupportedJwtException ex) {
+            throw new ParkingJwtException("Unsupported JWT Token");
+        } catch (IllegalArgumentException ex) {
+            throw new ParkingJwtException("Invalid Argument. Token must be not empty and non null.");
         }
     }
 }

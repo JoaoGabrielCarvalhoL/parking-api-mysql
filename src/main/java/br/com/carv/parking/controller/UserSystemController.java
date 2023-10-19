@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,15 +21,18 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @Tag(name = "User Controller", description = "Endpoint for managing API users.")
+@PreAuthorize("hasRole('ADMIN')")
 public interface UserSystemController {
 
 
-    @Operation(summary = "Create User.", description = "Request to create a new user.")
+    @Operation(summary = "Create User.", description = "Request to create a new user.",
+    security = @SecurityRequirement(name = "security"))
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Created.", content =
             { @Content(schema = @Schema(implementation = UserResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request.",
@@ -49,7 +53,8 @@ public interface UserSystemController {
                                                    HttpServletRequest httpServletRequest);
 
 
-    @Operation(summary = "Find User By Id.", description = "Request to find user by id.")
+    @Operation(summary = "Find User By Id.", description = "Request to find user by id.",
+            security = @SecurityRequirement(name = "security"))
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK.", content =
             { @Content(schema = @Schema(implementation = UserGetResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request."),
@@ -58,10 +63,12 @@ public interface UserSystemController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error.")})
     @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN') OR (hasRole('USER') AND #id == authentication.principal.id)")
     ResponseEntity<UserGetResponse> findById(@PathVariable("id") UUID id);
 
 
-    @Operation(summary = "Find All Users.", description = "Request to find all users on system.")
+    @Operation(summary = "Find All Users.", description = "Request to find all users on system.",
+            security = @SecurityRequirement(name = "security"))
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK.", content =
             { @Content(schema = @Schema(implementation = UserGetResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Bad Request."),
@@ -73,7 +80,8 @@ public interface UserSystemController {
     ResponseEntity<Page<UserGetResponse>> findAll(Pageable pageable);
 
 
-    @Operation(summary = "Delete User.", description = "Request to delete user of system.")
+    @Operation(summary = "Delete User.", description = "Request to delete user of system.",
+            security = @SecurityRequirement(name = "security"))
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "No Content."),
             @ApiResponse(responseCode = "400", description = "Bad Request."),
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
@@ -84,7 +92,8 @@ public interface UserSystemController {
     ResponseEntity<Void> delete(@PathVariable("id") UUID id);
 
 
-    @Operation(summary = "Update User.", description = "Request to update user of system.")
+    @Operation(summary = "Update User.", description = "Request to update user of system.",
+            security = @SecurityRequirement(name = "security"))
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "No Content."),
             @ApiResponse(responseCode = "400", description = "Bad Request."),
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
@@ -95,7 +104,8 @@ public interface UserSystemController {
     ResponseEntity<Void> update(@RequestBody @Valid UserPutRequest userPutRequest);
 
 
-    @Operation(summary = "Change Password.", description = "Request to change password of a user of system.")
+    @Operation(summary = "Change Password.", description = "Request to change password of a user of system.",
+            security = @SecurityRequirement(name = "security"))
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "No Content."),
             @ApiResponse(responseCode = "400", description = "Bad Request."),
             @ApiResponse(responseCode = "401", description = "Unauthorized."),
@@ -103,6 +113,7 @@ public interface UserSystemController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error.")})
     @PatchMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER') AND #id == authentication.principal.id)")
     ResponseEntity<Void> changePassword(@PathVariable("id") UUID id, @RequestBody @Valid PasswordResetPostRequest
             passwordResetPostRequest);
 }

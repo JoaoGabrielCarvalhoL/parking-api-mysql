@@ -3,6 +3,7 @@ package br.com.carv.parking.service.impl;
 import br.com.carv.parking.entity.UserSystem;
 import br.com.carv.parking.exception.ResourceNotFoundException;
 import br.com.carv.parking.repository.UserSystemRepository;
+import br.com.carv.parking.security.UserSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -31,10 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         logger.info("Getting user by username: " + username);
         Optional<UserSystem> user = this.userSystemRepository.findByUsername(username);
         if (user.isPresent()) {
-            Set<GrantedAuthority> authorities = new HashSet<>();
-            SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(user.get().getRole().name());
-            authorities.add(simpleGrantedAuthority);
-            return new User(user.get().getUsername(), user.get().getPasswordHash(), authorities);
+            return new UserSecurity(user.get());
         }
         throw new ResourceNotFoundException("User not found into database. Username: " + username);
     }

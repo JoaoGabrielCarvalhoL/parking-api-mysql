@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,5 +52,13 @@ public class ParkingApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(httpServletRequest, HttpStatus.BAD_REQUEST, ex.getMessage(), bindingResult));
 
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ResponseException> handleAccessDeniedException(AccessDeniedException ex,
+                                                                         HttpServletRequest httpServletRequest) {
+        ResponseException response = new ResponseException("Forbidden", HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<ResponseException>(response, HttpStatus.FORBIDDEN);
     }
 }
