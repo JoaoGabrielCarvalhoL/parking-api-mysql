@@ -19,6 +19,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.util.Arrays;
 import java.util.UUID;
 
+//TODO: Fix <Tests need to be refactored to support authentication>
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@Sql(scripts = "sql/user/user_system_insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -33,6 +35,7 @@ public class UserSystemIntegrationTest {
     void testGivenUser_whenUsernameAndPasswordValid_thenReturnPersistedUserWithHttpStatusCreated() {
         UserResponse response = webTestClient.post()
                 .uri("/api/v1/users")
+                .headers(JwtAuthentication.getHeaderAuthorization(webTestClient, "admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(header -> header.setBasicAuth("admin", "admin"))
                 .bodyValue(new UserPostRequest("João Gabriel Carvalho",

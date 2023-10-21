@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.logging.Logger;
 
+//TODO: Disable after first initialization. On first startup, it is necessary to uncomment Component to create the admin user.
 @Component
 public class AdminUserSystem implements CommandLineRunner {
 
