@@ -27,4 +27,6 @@ public interface ClientService {
     Client findEntityById(final UUID id);
 
     void verifyCertificatePerson(final String certificatePerson);
+
+    Client getClientByCertificatePerson(final String certificatePerson);
 }

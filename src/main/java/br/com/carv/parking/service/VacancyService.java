@@ -26,4 +26,6 @@ public interface VacancyService {
     void delete(final UUID id);
 
     Vacancy findEntityById(final UUID id);
+
+    Vacancy searchFreeVacancy();
 }

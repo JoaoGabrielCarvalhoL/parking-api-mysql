@@ -3,6 +3,7 @@ package br.com.carv.parking.handler;
 import br.com.carv.parking.exception.PasswordMissMatchException;
 import br.com.carv.parking.exception.ResourceAlreadyUsedException;
 import br.com.carv.parking.exception.ResourceNotFoundException;
+import br.com.carv.parking.exception.ResourceUnavailableException;
 import br.com.carv.parking.exception.response.ErrorMessage;
 import br.com.carv.parking.exception.response.ResponseException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,14 @@ public class ParkingApiExceptionHandler {
 
     @ExceptionHandler(ResourceAlreadyUsedException.class)
     public final ResponseEntity<ResponseException> handleResourceAlreadyUsedException(ResourceAlreadyUsedException exception) {
+        ResponseException exceptionResponse =
+                new ResponseException("Bad Request", HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<ResponseException>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceUnavailableException.class)
+    public final ResponseEntity<ResponseException> handleResourceUnavailableException(ResourceUnavailableException exception) {
         ResponseException exceptionResponse =
                 new ResponseException("Bad Request", HttpStatus.BAD_REQUEST.value(),
                         exception.getMessage(), LocalDateTime.now());

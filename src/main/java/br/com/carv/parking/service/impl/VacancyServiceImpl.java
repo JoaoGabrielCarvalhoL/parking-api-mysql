@@ -2,8 +2,10 @@ package br.com.carv.parking.service.impl;
 
 import br.com.carv.parking.controller.impl.VacancyControllerImpl;
 import br.com.carv.parking.entity.Vacancy;
+import br.com.carv.parking.enumerations.VacancyStatus;
 import br.com.carv.parking.exception.ResourceAlreadyUsedException;
 import br.com.carv.parking.exception.ResourceNotFoundException;
+import br.com.carv.parking.exception.ResourceUnavailableException;
 import br.com.carv.parking.mapper.VacancyMapper;
 import br.com.carv.parking.payload.request.VacancyPostRequest;
 import br.com.carv.parking.payload.request.VacancyPutRequest;
@@ -89,5 +91,11 @@ public class VacancyServiceImpl implements VacancyService {
         logger.info("Getting entity from database. Id: " + id);
         return this.vacancyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vacancy not found into database. Id: " + id));
+    }
+
+    @Override
+    public Vacancy searchFreeVacancy() {
+        return vacancyRepository.findFirstByStatus(VacancyStatus.FREE_VACANCY)
+                .orElseThrow(() -> new ResourceUnavailableException("Resource Unavailable."));
     }
 }

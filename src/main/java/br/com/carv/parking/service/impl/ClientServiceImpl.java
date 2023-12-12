@@ -106,4 +106,11 @@ public class ClientServiceImpl implements ClientService {
             throw new ResourceAlreadyUsedException("Certificate Unavailable. Certificate Person must be unique.");
         }
     }
+
+    @Override
+    public Client getClientByCertificatePerson(String certificatePerson) {
+        return clientRepository.findByCertificatePerson(certificatePerson)
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found. CPF: " + certificatePerson));
+
+    }
 }
