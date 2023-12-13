@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -41,7 +42,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers(HttpMethod.POST, "api/v1/auth/**").permitAll()
+                        authorize.requestMatchers("api/v1/auth/**").permitAll()
                                 .requestMatchers("/swagger-ui/index.html", "/swagger-ui/**",
                                         "/v3/api-docs/swagger-config", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                                 .requestMatchers("api/v1/users").hasRole("ADMIN")

@@ -1,9 +1,6 @@
 package br.com.carv.parking.handler;
 
-import br.com.carv.parking.exception.PasswordMissMatchException;
-import br.com.carv.parking.exception.ResourceAlreadyUsedException;
-import br.com.carv.parking.exception.ResourceNotFoundException;
-import br.com.carv.parking.exception.ResourceUnavailableException;
+import br.com.carv.parking.exception.*;
 import br.com.carv.parking.exception.response.ErrorMessage;
 import br.com.carv.parking.exception.response.ResponseException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,5 +66,13 @@ public class ParkingApiExceptionHandler {
         ResponseException response = new ResponseException("Forbidden", HttpStatus.FORBIDDEN.value(),
                 ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<ResponseException>(response, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ReportGenericException.class)
+    public final ResponseEntity<ResponseException> handleReportGenericException(ReportGenericException exception) {
+        ResponseException exceptionResponse =
+                new ResponseException("UNPROCESSABLE ENTITY", HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                        exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<ResponseException>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

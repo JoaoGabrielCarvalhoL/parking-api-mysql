@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.io.IOException;
 
 @Tag(name = "Auth Controller", description = "Endpoint to authenticate user")
 public interface AuthController {
@@ -32,6 +35,14 @@ public interface AuthController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginPostRequest loginPostRequest);
+
+    @Operation(summary = "Get User System.", description = "Request to retrieve user basic of system.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "OK."),
+            @ApiResponse(responseCode = "400", description = "Bad Request."),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error.")})
+    @GetMapping("/report")
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<Void> getReportUser(HttpServletResponse httpServletResponse) throws IOException;
 
 
 }
